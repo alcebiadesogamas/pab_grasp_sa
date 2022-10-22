@@ -12,13 +12,15 @@
 
 #define PESO_TLNAVIO 10000 // PENALIZACAO POR ULTRAPASSAR TEMPO LIMITE DO NAVIO NO PORTO.
 #define PESO_TFBERCO 10000 // PENALIZACAO POE ULTRAPASSAR TEMPO DE FECHAMENTO DO BERCO.
+#define MAX_INT 1234567910
+#define TAXA 0.5
 
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
 
-    // srand(time(NULL));
+    srand(time(NULL));
     lerDados("i01.txt");
     Solucao sol;
     // heuConGul(sol);
@@ -142,13 +144,18 @@ void heuConGul(Solucao &s)
 
 void heuristicaMazin(Solucao &s)
 {
-    int tempoEsperaBerco[MAX_BERCOS];
+    int tempoEsperaBercoAtual[MAX_BERCOS];
     memset(&s.qtd_navio_no_berco, 0, sizeof(s.qtd_navio_no_berco));
     memset(&s.MAT, -1, sizeof(s.MAT));
-    memset(tempoEsperaBerco, 0, sizeof(tempoEsperaBerco));
+    memset(tempoEsperaBercoAtual, 0, sizeof(tempoEsperaBercoAtual));
+
+    int temposEsperaNavioBercos[MAX_BERCOS];
+    int indiceTemposEsperaNavioBercos[MAX_BERCOS];
+    memset(indiceTemposEsperaNavioBercos, -1, sizeof(indiceTemposEsperaNavioBercos));
+    memset(temposEsperaNavioBercos, -1, sizeof(temposEsperaNavioBercos));
 
     int ordemChegadaNavioCrescente[MAX_NAVIOS];
-    for (int i = 0; i < MAX_NAVIOS; i++)
+    for (int i = 0; i < NUMNAVIOS; i++)
     {
         ordemChegadaNavioCrescente[i] = i;
     }
@@ -159,37 +166,57 @@ void heuristicaMazin(Solucao &s)
 
     for (int i = 0; i < NUMNAVIOS; i++)
     {
+
+        for (int j = 0; j < NUMBERCOS; j++)
+        {
+            temposEsperaNavioBercos[j] = MAX_INT;
+            indiceTemposEsperaNavioBercos[j] = j;
+        }
+
         // primeiro berço que atende o navio
         for (int j = 0; j < NUMBERCOS; j++)
         {
             if (MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]] != 0)
             {
-                menorTempoEspera = tempoEsperaBerco[j];
+                menorTempoEspera = tempoEsperaBercoAtual[j];
                 indiceBercoMenorTempo = j;
+                temposEsperaNavioBercos[j] = menorTempoEspera;
+                indiceTemposEsperaNavioBercos[j] = j;
                 break;
             }
         }
 
-        for (int k = indiceBercoMenorTempo; k < NUMBERCOS; k++)
+        for (int k = indiceBercoMenorTempo + 1; k < NUMBERCOS; k++)
         {
-            if (MAT_ATENDIMENTO[k][ordemChegadaNavioCrescente[i]] != 0 && tempoEsperaBerco[k] < tempoEsperaBerco[indiceBercoMenorTempo])
+            if (tempoEsperaBercoAtual[k] < tempoEsperaBercoAtual[indiceBercoMenorTempo] && MAT_ATENDIMENTO[k][ordemChegadaNavioCrescente[i]] != 0)
             {
-                menorTempoEspera = tempoEsperaBerco[k];
+                menorTempoEspera = tempoEsperaBercoAtual[k];
                 indiceBercoMenorTempo = k;
+                temposEsperaNavioBercos[k] = menorTempoEspera;
+                indiceTemposEsperaNavioBercos[k] = k;
+            }
+            else if (MAT_ATENDIMENTO[k][ordemChegadaNavioCrescente[i]] != 0)
+            {
+                temposEsperaNavioBercos[k] = tempoEsperaBercoAtual[k];
+                indiceTemposEsperaNavioBercos[k] = k;
             }
         }
 
         if (menorTempoEspera < tempChegada[ordemChegadaNavioCrescente[i]])
         {
-            tempoEsperaBerco[indiceBercoMenorTempo] = menorTempoEspera + tempChegada[ordemChegadaNavioCrescente[i]] + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
+            tempoEsperaBercoAtual[indiceBercoMenorTempo] =
+                menorTempoEspera + tempChegada[ordemChegadaNavioCrescente[i]] + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
         }
         else
         {
-            tempoEsperaBerco[indiceBercoMenorTempo] = menorTempoEspera + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
+            tempoEsperaBercoAtual[indiceBercoMenorTempo] =
+                menorTempoEspera + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
         }
-
-        s.MAT[indiceBercoMenorTempo][s.qtd_navio_no_berco[indiceBercoMenorTempo]] = ordemChegadaNavioCrescente[i];
-        s.qtd_navio_no_berco[indiceBercoMenorTempo]++;
+        ordenarPosicaoMenorTempoEspera(temposEsperaNavioBercos, indiceTemposEsperaNavioBercos, NUMBERCOS);
+        int qtdAmostra = TAXA * NUMBERCOS;
+        int indiceBercoEscolhido = rand() % qtdAmostra;
+        s.MAT[indiceBercoEscolhido][s.qtd_navio_no_berco[indiceBercoEscolhido]] = ordemChegadaNavioCrescente[i];
+        s.qtd_navio_no_berco[indiceBercoEscolhido]++;
     }
 }
 
@@ -345,27 +372,6 @@ void gerar_vizinha_3(Solucao &s) // troco a ordem de atendimento, pode ser que q
 
 void ordenarPosicaoMenorTempoChegada(int vetTempChegadaOrd[MAX_NAVIOS], int qtd)
 {
-
-    // INSERTION SORT O(N^2)
-    /*  int i, key, j, value;
-    for (i = 1; i < qtd; i++)
-    {
-
-        value = vetTempChegadaOrd[i];
-        j = i - 1;
-
-        /* Move elements of arr[0..i-1], that are
-        greater than key, to one position ahead
-        of their current position
-        while (j >= 0 && tempChegada[vetTempChegadaOrd[j]] > tempChegada[vetTempChegadaOrd[i]])
-        {
-            vetTempChegadaOrd[j + 1] = vetTempChegadaOrd[j];
-            j = j - 1;
-        }
-        vetTempChegadaOrd[j + 1] = value;
-    } */
-
-    // BUBBLE SORT O(N^2)
     int flag, aux;
     flag = 1;
 
@@ -381,6 +387,28 @@ void ordenarPosicaoMenorTempoChegada(int vetTempChegadaOrd[MAX_NAVIOS], int qtd)
                 aux = vetTempChegadaOrd[j];
                 vetTempChegadaOrd[j] = vetTempChegadaOrd[j + 1];
                 vetTempChegadaOrd[j + 1] = aux;
+            }
+        }
+    }
+}
+
+void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd)
+{
+    int flag, aux;
+    flag = 1;
+
+    while (flag)
+    {
+        flag = 0;
+        for (int j = 0; j < qtd - 1; j++)
+        {
+
+            if (temposEsperaNavioBercos[indicesBercos[j]] > temposEsperaNavioBercos[indicesBercos[j + 1]])
+            {
+                flag = 1;
+                aux = indicesBercos[j];
+                indicesBercos[j] = indicesBercos[j + 1];
+                indicesBercos[j + 1] = aux;
             }
         }
     }

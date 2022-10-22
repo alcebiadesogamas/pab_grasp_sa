@@ -58,4 +58,6 @@ void gerar_vizinha_3(Solucao &s);
 void ordemAtendimento(Solucao &s);
 
 void heuristicaMazin(Solucao &s);
+
+void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd);
 #endif
