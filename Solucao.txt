@@ -1,96 +1,23 @@
 < ----------------------------- SOLUÇÃO ---------------------------- >
-Número de berços utilizados.........................:  13
-Número de navios atendidos..........................:  60
-Tempo total de operação.............................:  1409
+Número de berços utilizados.........................:  2
+Número de navios atendidos..........................:  5
+Tempo total de operação.............................:  59
 Total de viol. nas jan. de tempo dos bercos.........:  0
 Total de viol. nas jan. de tempo dos navios.........:  0
-FO da solução.......................................:  1409
+FO da solução.......................................:  59
 
-Quantidade de navios atendidos no berço  1 :  4 
-Quantidade de navios atendidos no berço  2 :  4 
-Quantidade de navios atendidos no berço  3 :  5 
-Quantidade de navios atendidos no berço  4 :  6 
-Quantidade de navios atendidos no berço  5 :  6 
-Quantidade de navios atendidos no berço  6 :  5 
-Quantidade de navios atendidos no berço  7 :  3 
-Quantidade de navios atendidos no berço  8 :  5 
-Quantidade de navios atendidos no berço  9 :  6 
-Quantidade de navios atendidos no berço  10 :  4 
-Quantidade de navios atendidos no berço  11 :  5 
-Quantidade de navios atendidos no berço  12 :  4 
-Quantidade de navios atendidos no berço  13 :  3 
+Quantidade de navios atendidos no berço  1 :  2 
+Quantidade de navios atendidos no berço  2 :  0 
+Quantidade de navios atendidos no berço  3 :  3 
+Quantidade de navios atendidos no berço  4 :  0 
 
-Incio de atendimento do navio  2  no berço  1 :  23 
-Incio de atendimento do navio  18  no berço  1 :  42 
-Incio de atendimento do navio  1  no berço  1 :  87 
-Incio de atendimento do navio  10  no berço  1 :  137 
+Incio de atendimento do navio  3  no berço  1 :  1 
+Incio de atendimento do navio  0  no berço  1 :  12 
 
-Incio de atendimento do navio  5  no berço  2 :  14 
-Incio de atendimento do navio  12  no berço  2 :  64 
-Incio de atendimento do navio  20  no berço  2 :  101 
-Incio de atendimento do navio  23  no berço  2 :  119 
 
-Incio de atendimento do navio  47  no berço  3 :  14 
-Incio de atendimento do navio  21  no berço  3 :  29 
-Incio de atendimento do navio  46  no berço  3 :  83 
-Incio de atendimento do navio  6  no berço  3 :  100 
-Incio de atendimento do navio  55  no berço  3 :  124 
+Incio de atendimento do navio  1  no berço  3 :  5 
+Incio de atendimento do navio  4  no berço  3 :  12 
+Incio de atendimento do navio  2  no berço  3 :  27 
 
-Incio de atendimento do navio  49  no berço  4 :  14 
-Incio de atendimento do navio  7  no berço  4 :  51 
-Incio de atendimento do navio  15  no berço  4 :  68 
-Incio de atendimento do navio  52  no berço  4 :  96 
-Incio de atendimento do navio  0  no berço  4 :  120 
-Incio de atendimento do navio  8  no berço  4 :  130 
-
-Incio de atendimento do navio  56  no berço  5 :  14 
-Incio de atendimento do navio  9  no berço  5 :  36 
-Incio de atendimento do navio  50  no berço  5 :  59 
-Incio de atendimento do navio  16  no berço  5 :  78 
-Incio de atendimento do navio  19  no berço  5 :  102 
-Incio de atendimento do navio  59  no berço  5 :  132 
-
-Incio de atendimento do navio  13  no berço  6 :  14 
-Incio de atendimento do navio  4  no berço  6 :  36 
-Incio de atendimento do navio  58  no berço  6 :  88 
-Incio de atendimento do navio  51  no berço  6 :  112 
-Incio de atendimento do navio  54  no berço  6 :  141 
-
-Incio de atendimento do navio  17  no berço  7 :  36 
-Incio de atendimento do navio  48  no berço  7 :  87 
-Incio de atendimento do navio  53  no berço  7 :  111 
-
-Incio de atendimento do navio  11  no berço  8 :  33 
-Incio de atendimento do navio  57  no berço  8 :  63 
-Incio de atendimento do navio  37  no berço  8 :  79 
-Incio de atendimento do navio  26  no berço  8 :  96 
-Incio de atendimento do navio  14  no berço  8 :  115 
-
-Incio de atendimento do navio  3  no berço  9 :  14 
-Incio de atendimento do navio  24  no berço  9 :  45 
-Incio de atendimento do navio  41  no berço  9 :  68 
-Incio de atendimento do navio  22  no berço  9 :  91 
-Incio de atendimento do navio  39  no berço  9 :  124 
-Incio de atendimento do navio  36  no berço  9 :  139 
-
-Incio de atendimento do navio  32  no berço  10 :  26 
-Incio de atendimento do navio  25  no berço  10 :  62 
-Incio de atendimento do navio  30  no berço  10 :  98 
-Incio de atendimento do navio  38  no berço  10 :  128 
-
-Incio de atendimento do navio  40  no berço  11 :  22 
-Incio de atendimento do navio  33  no berço  11 :  48 
-Incio de atendimento do navio  45  no berço  11 :  75 
-Incio de atendimento do navio  31  no berço  11 :  105 
-Incio de atendimento do navio  28  no berço  11 :  128 
-
-Incio de atendimento do navio  35  no berço  12 :  14 
-Incio de atendimento do navio  42  no berço  12 :  58 
-Incio de atendimento do navio  44  no berço  12 :  78 
-Incio de atendimento do navio  27  no berço  12 :  110 
-
-Incio de atendimento do navio  29  no berço  13 :  65 
-Incio de atendimento do navio  43  no berço  13 :  89 
-Incio de atendimento do navio  34  no berço  13 :  122 
 
 

@@ -59,5 +59,13 @@ void ordemAtendimento(Solucao &s);
 
 void heuristicaMazin(Solucao &s);
 
+void heuristicaMazin2(Solucao &s);
+
+void calcFOSemPenalizacao(Solucao &s);
+
+void imprimirSolucaoContrutiva(Solucao &s);
+
+void preencherIndicesOrdemCrescente(int vetor[MAX_NAVIOS], int qtd);
+
 void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd);
 #endif

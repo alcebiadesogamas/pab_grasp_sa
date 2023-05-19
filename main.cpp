@@ -8,12 +8,13 @@
 #include <algorithm>
 
 #define MAX(X, Y) ((X > Y) ? X : Y)
+#define ATENDE(berco, navio) ((MAT_ATENDIMENTO[berco][navio] != 0) ? 1 : 0)
 //#define DBG
 
 #define PESO_TLNAVIO 10000 // PENALIZACAO POR ULTRAPASSAR TEMPO LIMITE DO NAVIO NO PORTO.
 #define PESO_TFBERCO 10000 // PENALIZACAO POE ULTRAPASSAR TEMPO DE FECHAMENTO DO BERCO.
 #define MAX_INT 1234567910
-#define TAXA 0.5
+#define ALFA 0.5
 
 using namespace std;
 
@@ -21,19 +22,23 @@ int main(int argc, char const *argv[])
 {
 
     srand(time(NULL));
-    lerDados("i01.txt");
+    // lerDados("i01.txt");
+    lerDados("dezxseis.txt");
     Solucao sol;
     // heuConGul(sol);
-    heuristicaMazin(sol);
+    // heuristicaMazin(sol);  
+    heuristicaMazin2(sol);
     // clock_t h;
-    calcFO(sol);
+    calcFOSemPenalizacao(sol);
     double tempo_limite, tempo_melhor, tempo_total;
 
     tempo_limite = 5;
     // alpha, Smax/numero de iteracoes para atingir o equilibrio, temperatura inicial
     // temperatura de resfriamento, tempo limite de execução, solucao inicial, tempo da melhor fo, tempo total.
-    simulated_annealing(0.975, ((NUMBERCOS * NUMNAVIOS) / 2), 3900, 0.01, tempo_limite, sol, tempo_melhor, tempo_total);
-    printf("SA - FO: %d\t Tempo melhor: %.5f\tTempo total: %.5f\n", sol.fo, tempo_melhor, tempo_total);
+    // simulated_annealing(0.975, ((NUMBERCOS * NUMNAVIOS) / 2), 3900, 0.01, tempo_limite, sol, tempo_melhor, tempo_total);
+    // printf("SA - FO: %d\t Tempo melhor: %.5f\tTempo total: %.5f\n", sol.fo, tempo_melhor, tempo_total);
+
+    printf("heuristica - FO: %d \n", sol.fo);
 
     ordemAtendimento(sol);
     escreverSol(sol, "Solucao.txt");
@@ -140,6 +145,8 @@ void heuConGul(Solucao &s)
     {
         ordenarPosicaoMenorTempoChegada(s.MAT[i], s.qtd_navio_no_berco[i]);
     }
+
+    imprimirSolucaoContrutiva(s);
 }
 
 void heuristicaMazin(Solucao &s)
@@ -213,10 +220,86 @@ void heuristicaMazin(Solucao &s)
                 menorTempoEspera + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
         }
         ordenarPosicaoMenorTempoEspera(temposEsperaNavioBercos, indiceTemposEsperaNavioBercos, NUMBERCOS);
-        int qtdAmostra = TAXA * NUMBERCOS;
+        int qtdAmostra = ALFA * NUMBERCOS;
         int indiceBercoEscolhido = rand() % qtdAmostra;
         s.MAT[indiceBercoEscolhido][s.qtd_navio_no_berco[indiceBercoEscolhido]] = ordemChegadaNavioCrescente[i];
         s.qtd_navio_no_berco[indiceBercoEscolhido]++;
+    }
+    imprimirSolucaoContrutiva(s);    
+}
+
+void heuristicaMazin2(Solucao &s) {
+    int ordemChegadaNavioCrescente[MAX_NAVIOS]; // guarda o indice dos navios em ordem de chegada (crescente)
+    int ordemInicioAtendimentoBerco[MAX_BERCOS]; // guarde o indices dos tempos de inicios de atendimento
+    int tempoInicioAtendimento[MAX_BERCOS]; // guarda os tempos de inicios de atendimento no berco
+
+    int inicioAtendimentoNavio[MAX_NAVIOS]; // guarda o tempo de inicio de atendimento (no berco escolhido)
+    int ultimoNavioAtendidoBerco[MAX_BERCOS]; // guarda o ultimo navio atendido no berco
+    
+    // incializa os vetores
+    memset(inicioAtendimentoNavio, -1, sizeof(inicioAtendimentoNavio));
+    memset(ultimoNavioAtendidoBerco, -1, sizeof(ultimoNavioAtendidoBerco));  
+    memset(&s.qtd_navio_no_berco, 0, sizeof(s.qtd_navio_no_berco));
+    memset(&s.MAT, 0, sizeof(s.MAT));
+    memset(ordemChegadaNavioCrescente, -1, sizeof(ordemChegadaNavioCrescente));
+    memset(tempoInicioAtendimento, -1, sizeof(tempoInicioAtendimento));
+    memset(ordemInicioAtendimentoBerco, -1, sizeof(ordemInicioAtendimentoBerco));
+
+    // preenche indice e ordena vetor de ordem de chegada
+    preencherIndicesOrdemCrescente(ordemChegadaNavioCrescente, NUMNAVIOS);
+    ordenarPosicaoMenorTempoChegada(ordemChegadaNavioCrescente, NUMNAVIOS);
+
+    for (int i = 0; i < NUMNAVIOS; i++) {
+        // preenche indices para serem ordenados pelo valor inicio atendimento de cada navio no berco
+        preencherIndicesOrdemCrescente(ordemInicioAtendimentoBerco, NUMBERCOS);
+
+        for(int j = 0; j < NUMBERCOS; j++) {
+            if(MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]] != 0) {
+                if(ultimoNavioAtendidoBerco[j] != -1) {
+                    int aux = inicioAtendimentoNavio[ultimoNavioAtendidoBerco[j]] + 
+                         MAT_ATENDIMENTO[j][ultimoNavioAtendidoBerco[j]];
+                    if(aux > tempChegada[ordemChegadaNavioCrescente[i]]) {
+                        tempoInicioAtendimento[j] = aux;
+                    } else {
+                        tempoInicioAtendimento[j] = tempChegada[ordemChegadaNavioCrescente[i]];
+                    }  
+                } else {
+                    tempoInicioAtendimento[j] = tempChegada[ordemChegadaNavioCrescente[i]];
+                }
+            } else {
+                tempoInicioAtendimento[j] = 10000;
+            }
+        }
+        ordenarPosicaoMenorTempoEspera(tempoInicioAtendimento, ordemInicioAtendimentoBerco, NUMBERCOS);
+
+        int qtdAmostra = ALFA * NUMBERCOS;
+        int indiceDoIndiceBercoEscolhido = rand() % qtdAmostra;
+        
+        ultimoNavioAtendidoBerco[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]] = ordemChegadaNavioCrescente[i];
+        inicioAtendimentoNavio[ordemChegadaNavioCrescente[i]] = tempoInicioAtendimento[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]];
+
+        s.MAT[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]][s.qtd_navio_no_berco[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]]] = ordemChegadaNavioCrescente[i];
+        s.qtd_navio_no_berco[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]]++;
+    }
+
+    imprimirSolucaoContrutiva(s);
+
+}
+
+void imprimirSolucaoContrutiva(Solucao &s) {
+        for (int i = 0; i < NUMBERCOS; i++)
+    {
+        for (int j = 0; j < NUMNAVIOS; j++)
+        {
+            cout << s.MAT[i][j] << " ";
+        }
+        cout << "\n";
+    }
+}
+
+void preencherIndicesOrdemCrescente(int vetor[MAX_NAVIOS], int qtd) {
+    for (int i = 0; i < qtd; i++) {
+        vetor[i] = i;
     }
 }
 
@@ -424,7 +507,29 @@ void calcFO(Solucao &s)
         for (int j = 0; j < s.qtd_navio_no_berco[i]; j++)
         {
 
-            s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]) + (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i])) + (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]]));
+            s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]) 
+                    + (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i]))
+                    + (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]]));
+            // penalizar se estourou o tempo berco, do navio.
+        }
+    }
+}
+
+void calcFOSemPenalizacao (Solucao &s)
+{
+    s.fo = 0; // inicia com valor 0.
+    ordemAtendimento(s);
+    // calcula valor da FO.
+    for (int i = 0; i < NUMBERCOS; i++)
+    {
+        for (int j = 0; j < s.qtd_navio_no_berco[i]; j++)
+        {
+
+            s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]);
+            cout << "FO atual sem penalizacao: " << s.fo << endl;
+            cout << "Penalizacao por tempo de fechamento do berco: " <<  (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i])) << ", berco: " << i << endl;
+            cout << "Penalizacao por tempo limite de atendimento do navio: " << (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]])) << ", navio: " <<  s.MAT[i][j] << endl;
+
             // penalizar se estourou o tempo berco, do navio.
         }
     }
