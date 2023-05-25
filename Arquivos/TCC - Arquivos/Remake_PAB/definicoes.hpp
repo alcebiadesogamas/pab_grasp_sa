@@ -58,26 +58,4 @@ void gerar_vizinha_3(Solucao &s);
 void ordemAtendimento(Solucao &s);
 
 void heuristicaMazin(Solucao &s);
-
-void heuristicaMazin2(Solucao &s);
-
-void calcFOSemPenalizacao(Solucao &s);
-
-void imprimirSolucaoContrutiva(Solucao &s);
-
-void preencherIndicesOrdemCrescente(int vetor[MAX_NAVIOS], int qtd);
-
-void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd);
-
-void mazin2(Solucao &s);
-
-void preencherVetorComIndices(int vetor[], int size);
-
-void trocarElementos(int *a, int *b);
-
-void ordenarVetorPorOutro(int arrayA[MAX_NAVIOS], int arrayB[MAX_NAVIOS], int tamanho);
-
-bool bercoAtendeNavio(int berco, int navio);
-
 #endif
-

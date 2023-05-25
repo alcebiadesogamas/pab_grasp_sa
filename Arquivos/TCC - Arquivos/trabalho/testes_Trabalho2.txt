@@ -1,0 +1,24 @@
+-I05
+SA - FO: 1344   Tempo melhor: 4,26500   Tempo total: 300,00000
+SA - FO: 1344   Tempo melhor: 1,46800   Tempo total: 300,00000
+SA - FO: 1344   Tempo melhor: 4,70300   Tempo total: 300.01500
+-------------------------------------------------------------
+-I04
+SA - FO: 1359   Tempo melhor: 21,56200  Tempo total: 300,01500
+SA - FO: 1359   Tempo melhor: 15,99900  Tempo total: 300,01500
+SA - FO: 1359   Tempo melhor: 23,35900  Tempo total: 300,00100
+--------------------------------------------------------------
+-I03
+SA - FO: 1376   Tempo melhor: 5,37500   Tempo total: 300,00000
+SA - FO: 1376   Tempo melhor: 2,26500   Tempo total: 300,00000
+SA - FO: 1376   Tempo melhor: 4,03100   Tempo total: 300.01500
+--------------------------------------------------------------
+-I02
+SA - FO: 1368   Tempo melhor: 1,95300   Tempo total: 300,01500
+SA - FO: 1368   Tempo melhor: 0,29700   Tempo total: 300,00100
+SA - FO: 1368   Tempo melhor: 1,10900   Tempo total: 300,00000
+--------------------------------------------------------------
+I01
+SA - FO: 1409   Tempo melhor: 1,43700   Tempo total: 300,00000
+SA - FO: 1409   Tempo melhor: 0,68800   Tempo total: 300,01500
+SA - FO: 1409   Tempo melhor: 0,73400   Tempo total: 300,00000

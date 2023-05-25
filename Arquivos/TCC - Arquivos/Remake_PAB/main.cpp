@@ -4,45 +4,37 @@
 #include <stdlib.h>
 #include <math.h>
 #include "definicoes.hpp"
+#include <vector>
 #include <algorithm>
-#include <string.h>
 
 #define MAX(X, Y) ((X > Y) ? X : Y)
-
 //#define DBG
 
 #define PESO_TLNAVIO 10000 // PENALIZACAO POR ULTRAPASSAR TEMPO LIMITE DO NAVIO NO PORTO.
 #define PESO_TFBERCO 10000 // PENALIZACAO POE ULTRAPASSAR TEMPO DE FECHAMENTO DO BERCO.
-#define MAX_INT 1234567910
-#define ALFA 0
 
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
 
-    srand(time(NULL));
-    lerDados("i05.txt");
-    // lerDados("dezxseis.txt");
+    // srand(time(NULL));
+    lerDados("i01.txt");
     Solucao sol;
     // heuConGul(sol);
-    // heuristicaMazin(sol);  
-    // heuristicaMazin2(sol);  
-    mazin2(sol);
+    heuristicaMazin(sol);
     // clock_t h;
-    calcFOSemPenalizacao(sol);
+    calcFO(sol);
     double tempo_limite, tempo_melhor, tempo_total;
 
     tempo_limite = 5;
     // alpha, Smax/numero de iteracoes para atingir o equilibrio, temperatura inicial
     // temperatura de resfriamento, tempo limite de execução, solucao inicial, tempo da melhor fo, tempo total.
-    // simulated_annealing(0.975, ((NUMBERCOS * NUMNAVIOS) / 2), 3900, 0.01, tempo_limite, sol, tempo_melhor, tempo_total);
-    // printf("SA - FO: %d\t Tempo melhor: %.5f\tTempo total: %.5f\n", sol.fo, tempo_melhor, tempo_total);
-
-    printf("heuristica - FO: %d \n", sol.fo);
+    simulated_annealing(0.975, ((NUMBERCOS * NUMNAVIOS) / 2), 3900, 0.01, tempo_limite, sol, tempo_melhor, tempo_total);
+    printf("SA - FO: %d\t Tempo melhor: %.5f\tTempo total: %.5f\n", sol.fo, tempo_melhor, tempo_total);
 
     ordemAtendimento(sol);
-    // escreverSol(sol, "Solucao.txt");
+    escreverSol(sol, "Solucao.txt");
 
     return 0;
 }
@@ -146,240 +138,37 @@ void heuConGul(Solucao &s)
     {
         ordenarPosicaoMenorTempoChegada(s.MAT[i], s.qtd_navio_no_berco[i]);
     }
-
-    imprimirSolucaoContrutiva(s);
 }
-
 void heuristicaMazin(Solucao &s)
 {
-    int tempoEsperaBercoAtual[MAX_BERCOS];
     memset(&s.qtd_navio_no_berco, 0, sizeof(s.qtd_navio_no_berco));
     memset(&s.MAT, -1, sizeof(s.MAT));
-    memset(tempoEsperaBercoAtual, 0, sizeof(tempoEsperaBercoAtual));
-
-    int temposEsperaNavioBercos[MAX_BERCOS];
-    int indiceTemposEsperaNavioBercos[MAX_BERCOS];
-    memset(indiceTemposEsperaNavioBercos, -1, sizeof(indiceTemposEsperaNavioBercos));
-    memset(temposEsperaNavioBercos, -1, sizeof(temposEsperaNavioBercos));
 
     int ordemChegadaNavioCrescente[MAX_NAVIOS];
-    for (int i = 0; i < NUMNAVIOS; i++)
+    for (int i = 0; i < MAX_NAVIOS; i++)
     {
         ordemChegadaNavioCrescente[i] = i;
     }
     ordenarPosicaoMenorTempoChegada(ordemChegadaNavioCrescente, NUMNAVIOS);
 
-    int menorTempoEspera = 0;
+    int tempoAtendimentoBerco = 0;
     int indiceBercoMenorTempo = 0;
-
     for (int i = 0; i < NUMNAVIOS; i++)
     {
-
-        for (int j = 0; j < NUMBERCOS; j++)
+        tempoAtendimentoBerco = MAT_ATENDIMENTO[0][ordemChegadaNavioCrescente[i]];
+        int indiceBercoMenorTempo = 0;
+        for (int j = 1; j < NUMBERCOS; j++)
         {
-            temposEsperaNavioBercos[j] = MAX_INT;
-            indiceTemposEsperaNavioBercos[j] = j;
-        }
-
-        // primeiro berço que atende o navio
-        for (int j = 0; j < NUMBERCOS; j++)
-        {
-            if (MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]] != 0)
+            if ((MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]] != 0 
+                && MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]] < tempoAtendimentoBerco) 
+                || MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]] == 0)
             {
-                menorTempoEspera = tempoEsperaBercoAtual[j];
+                tempoAtendimentoBerco = MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]];
                 indiceBercoMenorTempo = j;
-                temposEsperaNavioBercos[j] = menorTempoEspera;
-                indiceTemposEsperaNavioBercos[j] = j;
-                break;
             }
         }
-
-        for (int k = indiceBercoMenorTempo + 1; k < NUMBERCOS; k++)
-        {
-            if (tempoEsperaBercoAtual[k] < tempoEsperaBercoAtual[indiceBercoMenorTempo] && MAT_ATENDIMENTO[k][ordemChegadaNavioCrescente[i]] != 0)
-            {
-                menorTempoEspera = tempoEsperaBercoAtual[k];
-                indiceBercoMenorTempo = k;
-                temposEsperaNavioBercos[k] = menorTempoEspera;
-                indiceTemposEsperaNavioBercos[k] = k;
-            }
-            else if (MAT_ATENDIMENTO[k][ordemChegadaNavioCrescente[i]] != 0)
-            {
-                temposEsperaNavioBercos[k] = tempoEsperaBercoAtual[k];
-                indiceTemposEsperaNavioBercos[k] = k;
-            }
-        }
-
-        if (menorTempoEspera < tempChegada[ordemChegadaNavioCrescente[i]])
-        {
-            tempoEsperaBercoAtual[indiceBercoMenorTempo] =
-                menorTempoEspera + tempChegada[ordemChegadaNavioCrescente[i]] + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
-        }
-        else
-        {
-            tempoEsperaBercoAtual[indiceBercoMenorTempo] =
-                menorTempoEspera + MAT_ATENDIMENTO[indiceBercoMenorTempo][ordemChegadaNavioCrescente[i]];
-        }
-        ordenarPosicaoMenorTempoEspera(temposEsperaNavioBercos, indiceTemposEsperaNavioBercos, NUMBERCOS);
-        int qtdAmostra = ALFA * NUMBERCOS;
-        int indiceBercoEscolhido = rand() % qtdAmostra;
-        s.MAT[indiceBercoEscolhido][s.qtd_navio_no_berco[indiceBercoEscolhido]] = ordemChegadaNavioCrescente[i];
-        s.qtd_navio_no_berco[indiceBercoEscolhido]++;
-    }
-    imprimirSolucaoContrutiva(s);    
-}
-
-void heuristicaMazin2(Solucao &s) {
-    int ordemChegadaNavioCrescente[MAX_NAVIOS]; // guarda o indice dos navios em ordem de chegada (crescente)
-    int ordemInicioAtendimentoBerco[MAX_BERCOS]; // guarde o indices dos tempos de inicios de atendimento
-    int tempoInicioAtendimento[MAX_BERCOS]; // guarda os tempos de inicios de atendimento no berco
-
-    int inicioAtendimentoNavio[MAX_NAVIOS]; // guarda o tempo de inicio de atendimento (no berco escolhido)
-    int ultimoNavioAtendidoBerco[MAX_BERCOS]; // guarda o ultimo navio atendido no berco
-    
-    // incializa os vetores
-    memset(inicioAtendimentoNavio, -1, sizeof(inicioAtendimentoNavio));
-    memset(ultimoNavioAtendidoBerco, -1, sizeof(ultimoNavioAtendidoBerco));  
-    memset(&s.qtd_navio_no_berco, 0, sizeof(s.qtd_navio_no_berco));
-    memset(&s.MAT, 0, sizeof(s.MAT));
-    memset(ordemChegadaNavioCrescente, -1, sizeof(ordemChegadaNavioCrescente));
-    memset(tempoInicioAtendimento, -1, sizeof(tempoInicioAtendimento));
-    memset(ordemInicioAtendimentoBerco, -1, sizeof(ordemInicioAtendimentoBerco));
-
-    // preenche indice e ordena vetor de ordem de chegada
-    preencherIndicesOrdemCrescente(ordemChegadaNavioCrescente, NUMNAVIOS);
-    ordenarPosicaoMenorTempoChegada(ordemChegadaNavioCrescente, NUMNAVIOS);
-
-    for (int i = 0; i < NUMNAVIOS; i++) {
-        // preenche indices para serem ordenados pelo valor inicio atendimento de cada navio no berco
-        preencherIndicesOrdemCrescente(ordemInicioAtendimentoBerco, NUMBERCOS);
-
-        for(int j = 0; j < NUMBERCOS; j++) {
-            if(MAT_ATENDIMENTO[j][ordemChegadaNavioCrescente[i]] != 0) {
-                if(ultimoNavioAtendidoBerco[j] != -1) {
-                    int aux = inicioAtendimentoNavio[ultimoNavioAtendidoBerco[j]] + 
-                         MAT_ATENDIMENTO[j][ultimoNavioAtendidoBerco[j]];
-                    if(aux > tempChegada[ordemChegadaNavioCrescente[i]]) {
-                        tempoInicioAtendimento[j] = aux;
-                    } else {
-                        tempoInicioAtendimento[j] = tempChegada[ordemChegadaNavioCrescente[i]];
-                    }  
-                } else {
-                    tempoInicioAtendimento[j] = tempChegada[ordemChegadaNavioCrescente[i]];
-                }
-            } else {
-                tempoInicioAtendimento[j] = 10000;
-            }
-        }
-        ordenarPosicaoMenorTempoEspera(tempoInicioAtendimento, ordemInicioAtendimentoBerco, NUMBERCOS);
-
-        int qtdAmostra = ALFA * NUMBERCOS;
-        int indiceDoIndiceBercoEscolhido = rand() % qtdAmostra;
-        
-        ultimoNavioAtendidoBerco[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]] = ordemChegadaNavioCrescente[i];
-        inicioAtendimentoNavio[ordemChegadaNavioCrescente[i]] = tempoInicioAtendimento[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]];
-
-        s.MAT[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]][s.qtd_navio_no_berco[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]]] = ordemChegadaNavioCrescente[i];
-        s.qtd_navio_no_berco[ordemInicioAtendimentoBerco[indiceDoIndiceBercoEscolhido]]++;
-    }
-
-    imprimirSolucaoContrutiva(s);
-
-}
-
-void mazin2(Solucao &s) {
-    //inicializa solucao
-    memset(&s.qtd_navio_no_berco, 0, sizeof(s.qtd_navio_no_berco));
-    memset(&s.MAT, -1, sizeof(s.MAT));
-
-    int navios[MAX_NAVIOS];
-    int tempoChegadaAux[MAX_NAVIOS];
-    int bercoTemp[MAX_BERCOS];
-    int inicioAtendimentoNavioBerco[MAX_BERCOS];
-    int ultimoNavioBerco[MAX_BERCOS];
-    int inicioAtendimentoNavio[MAX_NAVIOS];
-
-    memset(ultimoNavioBerco, -1, sizeof(ultimoNavioBerco));
-    memset(inicioAtendimentoNavio, -1, sizeof(inicioAtendimentoNavio));
-    memset(navios, -1, sizeof(navios));
-    memset(bercoTemp, -1, sizeof(bercoTemp));
-    
-    memset(tempoChegadaAux, 0, sizeof(tempoChegadaAux));
-
-    for (int i = 0; i < NUMNAVIOS; i++) {
-        tempoChegadaAux[i] = tempChegada[i];
-    }
-
-    preencherVetorComIndices(navios, NUMNAVIOS);
-    
-    //ordena navios pelo tempo de chegada.
-    // ordenarPosicaoMenorTempoChegada(navios, NUMNAVIOS);
-    ordenarVetorPorOutro(navios, tempoChegadaAux, NUMNAVIOS);
-
-    for (int navio = 0; navio < NUMNAVIOS; navio++) {
-        preencherVetorComIndices(bercoTemp, NUMBERCOS);
-        memset(inicioAtendimentoNavioBerco, -1, sizeof(inicioAtendimentoNavioBerco));
-
-        for (int berco = 0; berco < NUMBERCOS; berco++) {
-            if(!bercoAtendeNavio(berco, navios[navio])) {
-                inicioAtendimentoNavioBerco[berco] = 10000;
-            } else {
-                if(ultimoNavioBerco[berco] == -1) { // posso ter um cenário onde o navio chegou porém o berço Ja fechou, colocar 10000?
-                    inicioAtendimentoNavioBerco[berco] = tempoChegadaAux[navios[navio]];
-                } else {
-                    int tempoServicoNavioAnteriorBerco = inicioAtendimentoNavio[ultimoNavioBerco[berco]] 
-                                                            + MAT_ATENDIMENTO[berco][ultimoNavioBerco[berco]];
-                    
-                    if(tempoChegadaAux[navios[navio]] <= tempoServicoNavioAnteriorBerco) { //aqui teria esse igual?
-                        inicioAtendimentoNavioBerco[berco] = tempoServicoNavioAnteriorBerco;
-                    } else { // novamente o berco pode estar fechado, considerar 10000?
-                        inicioAtendimentoNavioBerco[berco] = tempoChegadaAux[navios[navio]];
-                    }
-                }
-            }
-        }
-        
-        //ordenar bercos por tempo inicio atendimento ao navio
-        ordenarVetorPorOutro(bercoTemp, inicioAtendimentoNavioBerco, NUMBERCOS);
-
-        int qtdAmostra = ALFA * NUMBERCOS;
-        int indiceBercoEscolhido = (ALFA==0) ? 0 : rand() % qtdAmostra;
-
-        ultimoNavioBerco[bercoTemp[indiceBercoEscolhido]] = navios[navio];
-        inicioAtendimentoNavio[navios[navio]] = inicioAtendimentoNavioBerco[bercoTemp[indiceBercoEscolhido]];
-
-        s.MAT[bercoTemp[indiceBercoEscolhido]][s.qtd_navio_no_berco[bercoTemp[indiceBercoEscolhido]]] = navios[navio];
-        s.qtd_navio_no_berco[bercoTemp[indiceBercoEscolhido]]++;
-
-    }
-
-    imprimirSolucaoContrutiva(s);
-    
-}
-
-void preencherVetorComIndices(int vetor[], int size) {
-    for (int i = 0; i < size; i++) {
-        vetor[i] = i;
-    }
-}
-
-void imprimirSolucaoContrutiva(Solucao &s) {
-    for (int i = 0; i < NUMBERCOS; i++) {
-        cout << "berco " << i+1 << ": ";
-        for (int j = 0; j < NUMNAVIOS; j++) {
-            if(s.MAT[i][j] == -1) {
-                continue;
-            }
-            cout << s.MAT[i][j] << ", ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-void preencherIndicesOrdemCrescente(int vetor[MAX_NAVIOS], int qtd) {
-    for (int i = 0; i < qtd; i++) {
-        vetor[i] = i;
+        s.MAT[indiceBercoMenorTempo][s.qtd_navio_no_berco[indiceBercoMenorTempo]] = ordemChegadaNavioCrescente[i];
+        s.qtd_navio_no_berco[indiceBercoMenorTempo]++;
     }
 }
 
@@ -535,6 +324,27 @@ void gerar_vizinha_3(Solucao &s) // troco a ordem de atendimento, pode ser que q
 
 void ordenarPosicaoMenorTempoChegada(int vetTempChegadaOrd[MAX_NAVIOS], int qtd)
 {
+
+    // INSERTION SORT O(N^2)
+    /*  int i, key, j, value;
+    for (i = 1; i < qtd; i++)
+    {
+
+        value = vetTempChegadaOrd[i];
+        j = i - 1;
+
+        /* Move elements of arr[0..i-1], that are
+        greater than key, to one position ahead
+        of their current position
+        while (j >= 0 && tempChegada[vetTempChegadaOrd[j]] > tempChegada[vetTempChegadaOrd[i]])
+        {
+            vetTempChegadaOrd[j + 1] = vetTempChegadaOrd[j];
+            j = j - 1;
+        }
+        vetTempChegadaOrd[j + 1] = value;
+    } */
+
+    // BUBBLE SORT O(N^2)
     int flag, aux;
     flag = 1;
 
@@ -555,28 +365,6 @@ void ordenarPosicaoMenorTempoChegada(int vetTempChegadaOrd[MAX_NAVIOS], int qtd)
     }
 }
 
-void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd)
-{
-    int flag, aux;
-    flag = 1;
-
-    while (flag)
-    {
-        flag = 0;
-        for (int j = 0; j < qtd - 1; j++)
-        {
-
-            if (temposEsperaNavioBercos[indicesBercos[j]] > temposEsperaNavioBercos[indicesBercos[j + 1]])
-            {
-                flag = 1;
-                aux = indicesBercos[j];
-                indicesBercos[j] = indicesBercos[j + 1];
-                indicesBercos[j + 1] = aux;
-            }
-        }
-    }
-}
-
 void calcFO(Solucao &s)
 {
     s.fo = 0; // inicia com valor 0.
@@ -587,29 +375,7 @@ void calcFO(Solucao &s)
         for (int j = 0; j < s.qtd_navio_no_berco[i]; j++)
         {
 
-            s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]) 
-                    + (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i]))
-                    + (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]]));
-            // penalizar se estourou o tempo berco, do navio.
-        }
-    }
-}
-
-void calcFOSemPenalizacao (Solucao &s)
-{
-    s.fo = 0; // inicia com valor 0.
-    ordemAtendimento(s);
-    // calcula valor da FO.
-    for (int i = 0; i < NUMBERCOS; i++)
-    {
-        for (int j = 0; j < s.qtd_navio_no_berco[i]; j++)
-        {
-
-            s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]);
-            cout << "FO atual sem penalizacao: " << s.fo << endl;
-            cout << "Penalizacao por tempo de fechamento do berco: " <<  (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i])) << ", berco: " << i << endl;
-            cout << "Penalizacao por tempo limite de atendimento do navio: " << (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]])) << ", navio: " <<  s.MAT[i][j] << endl;
-
+            s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]) + (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i])) + (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]]));
             // penalizar se estourou o tempo berco, do navio.
         }
     }
@@ -645,26 +411,32 @@ void ordemAtendimento(Solucao &s)
     }
 }
 
-int totalViolacoesBercos() {
+int totalViolacoesBercos()
+{
     int total = 0;
-    for (int i = 0; i < NUMBERCOS; i++) {
+    for (int i = 0; i < NUMBERCOS; i++)
+    {
         total += MAX(0, vetTerminoAtendimento[i] - tempFechamento[i]);
     }
     return total;
 }
 
-int totalViolacoesNavios(Solucao &s) {
+int totalViolacoesNavios(Solucao &s)
+{
     int total = 0;
 
-    for (int i = 0; i < NUMBERCOS; i++) {
-        for (int j = 0; j < NUMNAVIOS; j++) {
+    for (int i = 0; i < NUMBERCOS; i++)
+    {
+        for (int j = 0; j < NUMNAVIOS; j++)
+        {
             total += MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]]);
         }
     }
     return total;
 }
 
-void escreverSol(Solucao &s, std::string arq) {
+void escreverSol(Solucao &s, std::string arq)
+{
     FILE *f;
     if (arq == "")
         f = stdout;
@@ -766,38 +538,4 @@ void escreverSol(Solucao &s, std::string arq) {
     }
     fprintf(f, "%s", "\n");
     fclose(f);
-}
-
-bool bercoAtendeNavio(int berco, int navio) {
-    return (MAT_ATENDIMENTO[berco][navio] != 0);
-}
- 
-void trocarElementos(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void ordenarVetorPorOutro(int arrayA[MAX_NAVIOS], int arrayB[MAX_NAVIOS], int tamanho) {
-     // Criar um vetor de índices para o vetor A
-    int indices[tamanho];
-    for (int i = 0; i < tamanho; i++) {
-        indices[i] = i;
-    }
-
-    // Usar a função std::sort com um lambda para ordenar os índices com base nos elementos de B
-    std::sort(indices, indices + tamanho, [&arrayB](int i, int j) {
-        return arrayB[i] < arrayB[j];
-    });
-
-    // Criar um vetor temporário para armazenar o resultado ordenado
-    int temp[tamanho];
-    for (int i = 0; i < tamanho; i++) {
-        temp[i] = arrayA[indices[i]];
-    }
-
-    // Copiar o vetor temporário de volta para o vetor A
-    for (int i = 0; i < tamanho; i++) {
-        arrayA[i] = temp[i];
-    }
 }
