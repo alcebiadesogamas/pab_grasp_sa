@@ -13,8 +13,9 @@
 
 #define PESO_TLNAVIO 10000 // PENALIZACAO POR ULTRAPASSAR TEMPO LIMITE DO NAVIO NO PORTO.
 #define PESO_TFBERCO 10000 // PENALIZACAO POE ULTRAPASSAR TEMPO DE FECHAMENTO DO BERCO.
+#define PESO_BERCO_PROIBIDO 10000 // PENALIZACAO POE ULTRAPASSAR TEMPO DE FECHAMENTO DO BERCO.
 #define MAX_INT 1234567910
-#define ALFA 0
+#define ALFA 0.5
 
 using namespace std;
 
@@ -22,7 +23,7 @@ int main(int argc, char const *argv[])
 {
 
     srand(time(NULL));
-    lerDados("i05.txt");
+    lerDados("i01.txt");
     // lerDados("dezxseis.txt");
     Solucao sol;
     // heuConGul(sol);
@@ -30,10 +31,11 @@ int main(int argc, char const *argv[])
     // heuristicaMazin2(sol);  
     mazin2(sol);
     // clock_t h;
-    calcFOSemPenalizacao(sol);
-    double tempo_limite, tempo_melhor, tempo_total;
+    calcFO(sol);
+    // calcFOSemPenalizacao(sol);
+    // double tempo_limite, tempo_melhor, tempo_total;
 
-    tempo_limite = 5;
+    // tempo_limite = 5;
     // alpha, Smax/numero de iteracoes para atingir o equilibrio, temperatura inicial
     // temperatura de resfriamento, tempo limite de execução, solucao inicial, tempo da melhor fo, tempo total.
     // simulated_annealing(0.975, ((NUMBERCOS * NUMNAVIOS) / 2), 3900, 0.01, tempo_limite, sol, tempo_melhor, tempo_total);
@@ -41,7 +43,7 @@ int main(int argc, char const *argv[])
 
     printf("heuristica - FO: %d \n", sol.fo);
 
-    ordemAtendimento(sol);
+    // ordemAtendimento(sol);
     // escreverSol(sol, "Solucao.txt");
 
     return 0;
@@ -313,7 +315,6 @@ void mazin2(Solucao &s) {
     preencherVetorComIndices(navios, NUMNAVIOS);
     
     //ordena navios pelo tempo de chegada.
-    // ordenarPosicaoMenorTempoChegada(navios, NUMNAVIOS);
     ordenarVetorPorOutro(navios, tempoChegadaAux, NUMNAVIOS);
 
     for (int navio = 0; navio < NUMNAVIOS; navio++) {
@@ -353,7 +354,7 @@ void mazin2(Solucao &s) {
 
     }
 
-    imprimirSolucaoContrutiva(s);
+    // imprimirSolucaoContrutiva(s);
     
 }
 
@@ -586,7 +587,9 @@ void calcFO(Solucao &s)
     {
         for (int j = 0; j < s.qtd_navio_no_berco[i]; j++)
         {
-
+            if(!bercoAtendeNavio(i, s.MAT[i][j])) {
+                s.fo += PESO_BERCO_PROIBIDO;
+            }
             s.fo += (matInicioAtendimento[i][j] - tempChegada[s.MAT[i][j]] + MAT_ATENDIMENTO[i][s.MAT[i][j]]) 
                     + (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i]))
                     + (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]]));
@@ -609,7 +612,9 @@ void calcFOSemPenalizacao (Solucao &s)
             cout << "FO atual sem penalizacao: " << s.fo << endl;
             cout << "Penalizacao por tempo de fechamento do berco: " <<  (PESO_TFBERCO * MAX(0, vetTerminoAtendimento[i] - tempFechamento[i])) << ", berco: " << i << endl;
             cout << "Penalizacao por tempo limite de atendimento do navio: " << (PESO_TLNAVIO * MAX(0, matTerminoAtendimento[i][j] - tempSaida[s.MAT[i][j]])) << ", navio: " <<  s.MAT[i][j] << endl;
-
+            if(!bercoAtendeNavio(i, s.MAT[i][j])) {
+                cout << "Houve penalizacao por navio em berco proibido" << endl;
+            }
             // penalizar se estourou o tempo berco, do navio.
         }
     }
@@ -780,7 +785,7 @@ void trocarElementos(int *a, int *b) {
 
 void ordenarVetorPorOutro(int arrayA[MAX_NAVIOS], int arrayB[MAX_NAVIOS], int tamanho) {
      // Criar um vetor de índices para o vetor A
-    int indices[tamanho];
+    int indices[MAX_NAVIOS];
     for (int i = 0; i < tamanho; i++) {
         indices[i] = i;
     }
@@ -791,7 +796,7 @@ void ordenarVetorPorOutro(int arrayA[MAX_NAVIOS], int arrayB[MAX_NAVIOS], int ta
     });
 
     // Criar um vetor temporário para armazenar o resultado ordenado
-    int temp[tamanho];
+    int temp[MAX_NAVIOS];
     for (int i = 0; i < tamanho; i++) {
         temp[i] = arrayA[indices[i]];
     }
