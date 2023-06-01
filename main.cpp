@@ -23,13 +23,14 @@ int main(int argc, char const *argv[])
 {
 
     srand(time(NULL));
-    lerDados("i01.txt");
+    lerDados(argv[2]);
+    double alpha = atof(argv[1]);
     // lerDados("dezxseis.txt");
     Solucao sol;
     // heuConGul(sol);
     // heuristicaMazin(sol);  
     // heuristicaMazin2(sol);  
-    mazin2(sol);
+    mazin2(sol, alpha);
     // clock_t h;
     calcFO(sol);
     // calcFOSemPenalizacao(sol);
@@ -40,8 +41,7 @@ int main(int argc, char const *argv[])
     // temperatura de resfriamento, tempo limite de execução, solucao inicial, tempo da melhor fo, tempo total.
     // simulated_annealing(0.975, ((NUMBERCOS * NUMNAVIOS) / 2), 3900, 0.01, tempo_limite, sol, tempo_melhor, tempo_total);
     // printf("SA - FO: %d\t Tempo melhor: %.5f\tTempo total: %.5f\n", sol.fo, tempo_melhor, tempo_total);
-
-    printf("heuristica - FO: %d \n", sol.fo);
+    printf("heuristica - FO: %d \n\n", sol.fo);
 
     // ordemAtendimento(sol);
     // escreverSol(sol, "Solucao.txt");
@@ -289,7 +289,7 @@ void heuristicaMazin2(Solucao &s) {
 
 }
 
-void mazin2(Solucao &s) {
+void mazin2(Solucao &s, double alpha) {
     //inicializa solucao
     memset(&s.qtd_navio_no_berco, 0, sizeof(s.qtd_navio_no_berco));
     memset(&s.MAT, -1, sizeof(s.MAT));
@@ -343,8 +343,8 @@ void mazin2(Solucao &s) {
         //ordenar bercos por tempo inicio atendimento ao navio
         ordenarVetorPorOutro(bercoTemp, inicioAtendimentoNavioBerco, NUMBERCOS);
 
-        int qtdAmostra = ALFA * NUMBERCOS;
-        int indiceBercoEscolhido = (ALFA==0) ? 0 : rand() % qtdAmostra;
+        int qtdAmostra = alpha * NUMBERCOS;
+        int indiceBercoEscolhido = (alpha==0) ? 0 : rand() % qtdAmostra;
 
         ultimoNavioBerco[bercoTemp[indiceBercoEscolhido]] = navios[navio];
         inicioAtendimentoNavio[navios[navio]] = inicioAtendimentoNavioBerco[bercoTemp[indiceBercoEscolhido]];

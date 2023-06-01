@@ -69,7 +69,7 @@ void preencherIndicesOrdemCrescente(int vetor[MAX_NAVIOS], int qtd);
 
 void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd);
 
-void mazin2(Solucao &s);
+void mazin2(Solucao &s, double alpha);
 
 void preencherVetorComIndices(int vetor[], int size);
 
