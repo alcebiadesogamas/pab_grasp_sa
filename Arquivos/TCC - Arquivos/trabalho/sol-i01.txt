@@ -1,0 +1,265 @@
+< ----------------------------- SOLUÇÃO ---------------------------- >
+Número de berços utilizados.........................: 13
+Número de navios atendidos..........................: 60
+Tempo total de operação.............................: 1409
+Total de viol. nas jan. de tempo dos bercos.........: 0
+Total de viol. nas jan. de tempo dos navios.........: 0
+FO da solução.......................................: 1409
+
+
+Berço 1:	
+Número de navios atendidos..................: 3
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 94
+
+Sequência de navios...: I --> 18 --> 21 --> 24 --> F
+
+
+Berço 2:	
+Número de navios atendidos..................: 5
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 104
+
+Sequência de navios...: I --> 22 --> 47 --> 7 --> 1 --> 9 --> F
+
+
+Berço 3:	
+Número de navios atendidos..................: 5
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 145
+
+Sequência de navios...: I --> 50 --> 5 --> 49 --> 52 --> 55 --> F
+
+
+Berço 4:	
+Número de navios atendidos..................: 4
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 102
+
+Sequência de navios...: I --> 4 --> 13 --> 53 --> 15 --> F
+
+
+Berço 5:	
+Número de navios atendidos..................: 6
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 115
+
+Sequência de navios...: I --> 3 --> 19 --> 51 --> 17 --> 20 --> 60 --> F
+
+
+Berço 6:	
+Número de navios atendidos..................: 5
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 109
+
+Sequência de navios...: I --> 48 --> 12 --> 58 --> 59 --> 54 --> F
+
+
+Berço 7:	
+Número de navios atendidos..................: 5
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 111
+
+Sequência de navios...: I --> 57 --> 8 --> 16 --> 23 --> 56 --> F
+
+
+Berço 8:	
+Número de navios atendidos..................: 5
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 138
+
+Sequência de navios...: I --> 14 --> 10 --> 30 --> 2 --> 11 --> F
+
+
+Berço 9:	
+Número de navios atendidos..................: 3
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 103
+
+Sequência de navios...: I --> 6 --> 45 --> 28 --> F
+
+
+Berço 10:	
+Número de navios atendidos..................: 4
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 88
+
+Sequência de navios...: I --> 33 --> 42 --> 31 --> 29 --> F
+
+
+Berço 11:	
+Número de navios atendidos..................: 6
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 102
+
+Sequência de navios...: I --> 36 --> 43 --> 38 --> 27 --> 40 --> 37 --> F
+
+
+Berço 12:	
+Número de navios atendidos..................: 4
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 94
+
+Sequência de navios...: I --> 34 --> 46 --> 32 --> 39 --> F
+
+
+Berço 13:	
+Número de navios atendidos..................: 5
+Horário de abertura.........................: 14
+Horário de fechamento.......................: 300
+Violações nas janelas de tempo do berço.....: 0
+Violações nas janelas de tempo dos navios...: 0
+FO do berço.................................: 104
+
+Sequência de navios...: I --> 41 --> 25 --> 26 --> 44 --> 35 --> F
+
+
+Programação:
+
+	Berço 1:	
+		H. abertura: 14	
+		Navio 18:	HA: 36	HD: 84
+		Navio 21:	HA: 101	HD: 117
+		Navio 24:	HA: 119	HD: 149
+		H. fechamento: 300	
+
+	Berço 2:	
+		H. abertura: 14	
+		Navio 22:	HA: 29	HD: 77
+		Navio 47:	HA: 83	HD: 97
+		Navio 7:	HA: 100	HD: 120
+		Navio 1:	HA: 120	HD: 130
+		Navio 9:	HA: 130	HD: 142
+		H. fechamento: 300	
+
+	Berço 3:	
+		H. abertura: 14	
+		Navio 50:	HA: 14	HD: 30
+		Navio 5:	HA: 36	HD: 84
+		Navio 49:	HA: 87	HD: 111
+		Navio 52:	HA: 111	HD: 139
+		Navio 55:	HA: 141	HD: 159
+		H. fechamento: 300	
+
+	Berço 4:	
+		H. abertura: 14	
+		Navio 4:	HA: 14	HD: 38
+		Navio 13:	HA: 64	HD: 94
+		Navio 53:	HA: 96	HD: 114
+		Navio 15:	HA: 115	HD: 139
+		H. fechamento: 300	
+
+	Berço 5:	
+		H. abertura: 14	
+		Navio 3:	HA: 23	HD: 41
+		Navio 19:	HA: 42	HD: 48
+		Navio 51:	HA: 59	HD: 77
+		Navio 17:	HA: 78	HD: 102
+		Navio 20:	HA: 102	HD: 132
+		Navio 60:	HA: 132	HD: 150
+		H. fechamento: 300	
+
+	Berço 6:	
+		H. abertura: 14	
+		Navio 48:	HA: 14	HD: 28
+		Navio 12:	HA: 33	HD: 51
+		Navio 58:	HA: 63	HD: 79
+		Navio 59:	HA: 88	HD: 112
+		Navio 54:	HA: 112	HD: 144
+		H. fechamento: 300	
+
+	Berço 7:	
+		H. abertura: 14	
+		Navio 57:	HA: 14	HD: 32
+		Navio 8:	HA: 51	HD: 67
+		Navio 16:	HA: 68	HD: 90
+		Navio 23:	HA: 91	HD: 121
+		Navio 56:	HA: 124	HD: 144
+		H. fechamento: 300	
+
+	Berço 8:	
+		H. abertura: 14	
+		Navio 14:	HA: 14	HD: 34
+		Navio 10:	HA: 36	HD: 56
+		Navio 30:	HA: 65	HD: 87
+		Navio 2:	HA: 87	HD: 133
+		Navio 11:	HA: 137	HD: 163
+		H. fechamento: 300	
+
+	Berço 9:	
+		H. abertura: 14	
+		Navio 6:	HA: 14	HD: 46
+		Navio 45:	HA: 78	HD: 106
+		Navio 28:	HA: 110	HD: 140
+		H. fechamento: 300	
+
+	Berço 10:	
+		H. abertura: 14	
+		Navio 33:	HA: 26	HD: 54
+		Navio 42:	HA: 68	HD: 88
+		Navio 31:	HA: 98	HD: 122
+		Navio 29:	HA: 128	HD: 144
+		H. fechamento: 300	
+
+	Berço 11:	
+		H. abertura: 14	
+		Navio 36:	HA: 14	HD: 38
+		Navio 43:	HA: 58	HD: 76
+		Navio 38:	HA: 79	HD: 93
+		Navio 27:	HA: 96	HD: 112
+		Navio 40:	HA: 124	HD: 138
+		Navio 37:	HA: 139	HD: 155
+		H. fechamento: 300	
+
+	Berço 12:	
+		H. abertura: 14	
+		Navio 34:	HA: 48	HD: 68
+		Navio 46:	HA: 75	HD: 105
+		Navio 32:	HA: 105	HD: 127
+		Navio 39:	HA: 128	HD: 150
+		H. fechamento: 300	
+
+	Berço 13:	
+		H. abertura: 14	
+		Navio 41:	HA: 22	HD: 42
+		Navio 25:	HA: 45	HD: 61
+		Navio 26:	HA: 62	HD: 82
+		Navio 44:	HA: 89	HD: 113
+		Navio 35:	HA: 122	HD: 146
+		H. fechamento: 300	

@@ -6,11 +6,10 @@
 #define MAX_NAVIOS 100
 #define MAX_BERCOS 20
 
-typedef struct tSolucao
-{
-    int fo;
-    int MAT[MAX_BERCOS][MAX_NAVIOS];
-    int qtd_navio_no_berco[MAX_BERCOS];
+typedef struct tSolucao {
+  int fo;
+  int MAT[MAX_BERCOS][MAX_NAVIOS];
+  int qtd_navio_no_berco[MAX_BERCOS];
 } Solucao;
 
 static int NUMNAVIOS;
@@ -29,7 +28,7 @@ int matTerminoAtendimento[MAX_BERCOS][MAX_NAVIOS];
 
 int vetTerminoAtendimento[MAX_BERCOS];
 
-void lerDados(std::string arq);
+void lerDados(const char *arq);
 
 void testarDados(char *arq);
 
@@ -39,15 +38,23 @@ void calcFO(Solucao &s);
 
 void heuConGul(Solucao &s);
 
-void escreverSol(Solucao &s, std::string arq);
+void escreverSol(Solucao &s, char *arq);
 
-void ordenarPosicaoMenorTempoChegada(int vetTempChegadaOrd[MAX_NAVIOS], int qtd);
+void ordenarPosicaoMenorTempoChegada(int vetTempChegadaOrd[MAX_NAVIOS],
+                                     int qtd);
 
 int totalViolacoesNavios(Solucao &s);
 
 int totalViolacoesBercos();
 
-void simulated_annealing(const double alfa, const int sa_max, const double temp_ini, const double temp_con, const double tempo_max, Solucao &s, double &tempo_melhor, double &tempo_total);
+// void simulated_annealing(const double alfa, const int sa_max,
+//                          const double temp_ini, const double temp_con,
+//                          const double tempo_max, Solucao &s,
+//                          double &tempo_melhor, double &tempo_total);
+//
+
+void simulated_annealing(const int sa_max, const double temp_ini,
+                         const double temp_final, Solucao &s);
 
 void gerar_vizinha_1(Solucao &s);
 
@@ -67,5 +74,20 @@ void imprimirSolucaoContrutiva(Solucao &s);
 
 void preencherIndicesOrdemCrescente(int vetor[MAX_NAVIOS], int qtd);
 
-void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS], int indicesBercos[MAX_BERCOS], int qtd);
+void ordenarPosicaoMenorTempoEspera(int temposEsperaNavioBercos[MAX_BERCOS],
+                                    int indicesBercos[MAX_BERCOS], int qtd);
+
+void mazin2(Solucao &s, double alpha);
+
+void preencherVetorComIndices(int vetor[], int size);
+
+void trocarElementos(int *a, int *b);
+
+void ordenarVetorPorOutro(int arrayA[MAX_NAVIOS], int arrayB[MAX_NAVIOS],
+                          int tamanho);
+
+bool bercoAtendeNavio(int berco, int navio);
+
+Solucao grasp();
+
 #endif
