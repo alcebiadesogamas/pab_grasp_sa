@@ -323,6 +323,7 @@ Solucao grasp() {
     hF = clock();
     tempoExecucao = ((double)(hF - hI)) / CLOCKS_PER_SEC;
   }
+  cout << tempoExecucao << endl;
   return sBest;
 }
 
