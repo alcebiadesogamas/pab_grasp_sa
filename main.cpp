@@ -31,11 +31,11 @@ int SA_MAX;
 
 int main(int argc, const char *argv[]) {
   srand(time(NULL));
-  lerDados(argv[2]);
+  lerDados(argv[3]);
   // lerDados("i01.txt");
-  ALPHA = atof(argv[1]);
-  BETA = atof(argv[3]);
-  TEMP_INICIAL = atof(argv[4]);
+  ALPHA = 0.2;
+  BETA = atof(argv[1]);
+  TEMP_INICIAL = atof(argv[2]);
   SA_MAX = ((NUMBERCOS * NUMNAVIOS) / 2);
   // ALPHA = 0.2;
   // BETA = 0.975;
@@ -64,6 +64,7 @@ int main(int argc, const char *argv[]) {
   // printf("SA - FO: %d\t Tempo melhor: %.5f\tTempo total: %.5f\n", sol.fo,
   // tempo_melhor, tempo_total);
   sol = grasp();
+  cout << "instancia: " << argv[3] << endl;
   printf("heuristica - FO: %d \n\n", sol.fo);
 
   // ordemAtendimento(sol);
@@ -311,7 +312,8 @@ Solucao grasp() {
   clock_t hF, hI = clock();
   double tempoExecucao = ((double)hI) / CLOCKS_PER_SEC;
 
-  while (tempoExecucao < TEMPO_LIMITE) {
+  while (tempoExecucao < TEMPO_LIMITE * 60) {
+    cout << "tempo decorrido: " << tempoExecucao << endl;
     Solucao s1;
     mazin2(s1, ALPHA);
     calcFO(s1);
@@ -323,7 +325,8 @@ Solucao grasp() {
     hF = clock();
     tempoExecucao = ((double)(hF - hI)) / CLOCKS_PER_SEC;
   }
-  cout << tempoExecucao << endl;
+  cout << "tempo total: " << tempoExecucao << endl;
+
   return sBest;
 }
 
