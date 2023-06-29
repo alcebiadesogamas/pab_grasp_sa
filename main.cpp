@@ -311,20 +311,23 @@ Solucao grasp() {
   Solucao sBest;
   clock_t hF, hI = clock();
   double tempoExecucao = ((double)hI) / CLOCKS_PER_SEC;
-
+  double tempo_melhor = 0;
   while (tempoExecucao < TEMPO_LIMITE * 60) {
-    cout << "tempo decorrido: " << tempoExecucao << endl;
+    // cout << "tempo decorrido: " << tempoExecucao << endl;
     Solucao s1;
     mazin2(s1, ALPHA);
     calcFO(s1);
     simulated_annealing(SA_MAX, TEMP_INICIAL, TEMP_FINAL, s1);
     if (s1.fo < fMin) {
+      hF = clock();
+      tempo_melhor = ((double)(hF - hI)) / CLOCKS_PER_SEC;
       clonaSolucao(s1, sBest);
       fMin = s1.fo;
     }
     hF = clock();
     tempoExecucao = ((double)(hF - hI)) / CLOCKS_PER_SEC;
   }
+  cout << "tempo para encontrar melhor: " << tempo_melhor << endl;
   cout << "tempo total: " << tempoExecucao << endl;
   return sBest;
 }

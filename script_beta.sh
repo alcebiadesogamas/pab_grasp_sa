@@ -25,7 +25,7 @@ for l1 in ${lista1[@]}; do
 
               let COUNTER++
               # echo "$l1 $l2 $arquivo"
-
+                echo "beta: $l1 temperatura_inicial: $l2"
               ./main $l1 $l2 $arquivo
 
             done
